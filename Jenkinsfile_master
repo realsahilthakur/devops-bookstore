@@ -42,7 +42,7 @@ pipeline {
                 branch 'master' // Only trigger for the master branch
             }
             steps {
-                build job: 'staging-deployment', parameters: [
+                build job: 'BookStaging', parameters: [
                     string(name: 'BUILD_NUMBER', value: "${env.BUILD_NUMBER}")
                 ]
             }
