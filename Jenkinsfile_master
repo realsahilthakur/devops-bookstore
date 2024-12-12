@@ -38,9 +38,6 @@ pipeline {
             }
         }
         stage('Deploy to Staging') {
-            when {
-                branch 'master' // Only trigger for the master branch
-            }
             steps {
                 build 'BookStaging'
             }
