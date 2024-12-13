@@ -12,7 +12,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
 # Disable directory indexing to prevent exposure of files
-RUN a2dismod autoindex
+RUN a2dismod -f autoindex
 
 # Ensure Apache configuration allows access
 RUN echo '<Directory /var/www/html>\n\
@@ -23,13 +23,16 @@ RUN echo '<Directory /var/www/html>\n\
     && a2enconf app
 
 # Reload Apache modules
-RUN service apache2 restart
+RUN service apache2 restart || true
 
 # Expose port 80 for HTTP traffic
 EXPOSE 80
 
 # Start Apache in the foreground
 CMD ["apache2-foreground"]
+
+
+#-------------------------------#
 
 
 # Use the official PHP image with built-in PHP-FPM
