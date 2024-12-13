@@ -9,11 +9,11 @@ RUN apt-get update && \
 # Set the working directory
 WORKDIR /var/www/html
 
-# Copy application code to the container
+# Copy application code (including login.php)
 COPY . .
 
 # Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/sites-available/default
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
