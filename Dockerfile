@@ -1,23 +1,34 @@
-# Use the official PHP image with built-in Apache
+# Use the official PHP image with Apache
 FROM php:7.4-apache
 
 # Set the working directory inside the container
 WORKDIR /var/www/html
 
 # Copy application code
-COPY . .
+COPY . /var/www/html
 
-# Ensure proper ownership and permissions for Apache
+# Fix ownership and permissions for Apache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Install additional PHP extensions if needed (e.g., pdo_mysql for database)
-RUN docker-php-ext-install pdo_mysql
+# Disable directory indexing to prevent exposure of files
+RUN a2dismod autoindex
+
+# Ensure Apache configuration allows access
+RUN echo '<Directory /var/www/html>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' > /etc/apache2/conf-available/app.conf \
+    && a2enconf app
+
+# Reload Apache modules
+RUN service apache2 restart
 
 # Expose port 80 for HTTP traffic
 EXPOSE 80
 
-# Start Apache server
+# Start Apache in the foreground
 CMD ["apache2-foreground"]
 
 
