@@ -22,15 +22,15 @@ pipeline {
             }
         }
 
-       //stage('Test Container') {
-       //   steps {
-       //        sh 'curl -I http://192.168.58.130:8081'
-      //    }
-        // }
+       stage('Test Container') {
+         steps {
+               sh 'curl -I http://192.168.58.130:8081'
+        }
+         }
 
         stage('Push Image to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-pass', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerpassword', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh 'docker login -u ${USERNAME} -p ${PASSWORD}'
                     sh 'docker push realsahilthakur/devops-bookstore'
                     sh "docker push realsahilthakur/devops-bookstore:develop-${env.BUILD_ID}"                    
