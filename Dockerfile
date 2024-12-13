@@ -1,25 +1,24 @@
-# Use the official PHP image with Apache
+# Use the official PHP image with built-in Apache
 FROM php:7.4-apache
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /var/www/html
-
-# Install required PHP extensions
-RUN docker-php-ext-install pdo_mysql
 
 # Copy application code
 COPY . .
 
-# Set appropriate permissions
-RUN chown -R www-data:www-data /var/www/html
+# Ensure proper ownership and permissions for Apache
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Expose port 80
+# Install additional PHP extensions if needed (e.g., pdo_mysql for database)
+RUN docker-php-ext-install pdo_mysql
+
+# Expose port 80 for HTTP traffic
 EXPOSE 80
 
 # Start Apache server
 CMD ["apache2-foreground"]
-
-
 
 
 # Use the official PHP image with built-in PHP-FPM
