@@ -1,22 +1,14 @@
-# Use the official PHP image as the base, which includes PHP-FPM
-FROM php:7.4-fpm
+# Use the official PHP image with built-in PHP-FPM
+FROM php:7.4-cli
 
-# Install Nginx
-RUN apt-get update && \
-    apt-get install -y nginx && \
-    rm -rf /var/lib/apt/lists/*
-
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /var/www/html
 
-# Copy application code (including login.php)
+# Copy your application code
 COPY . .
 
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
+# Expose port 80 for HTTP traffic
 EXPOSE 80
 
-# Start PHP-FPM and Nginx
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+# Run PHP's built-in server
+CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
