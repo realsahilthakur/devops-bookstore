@@ -8,13 +8,13 @@ pipeline {
                 sshagent(['ec2-ssh-credentials-id']) {
                     sh """
                         # Stop and remove any existing production container on EC2
-                        ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> "docker stop book-production || true && docker rm book-production || true"
+                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "docker stop book-production || true && docker rm book-production || true"
                         
                         # Pull the latest image from Docker Hub
-                        ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> "docker pull realsahilthakur/devops-bookstore:latest"
+                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "docker pull realsahilthakur/devops-bookstore:latest"
                         
                         # Run the container on port 80
-                        ssh -o StrictHostKeyChecking=no ec2-user@<EC2_PUBLIC_IP> "docker run --name book-production -d -p 80:80 realsahilthakur/devops-bookstore:latest"
+                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "docker run --name book-production -d -p 80:80 realsahilthakur/devops-bookstore:latest"
                     """
                 }
             }
