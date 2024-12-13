@@ -11,18 +11,15 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Disable directory indexing to prevent exposure of files
+# Update Apache configuration to set login.php as the default file
+RUN echo '<IfModule dir_module>\n\
+    DirectoryIndex login.php index.php index.html\n\
+</IfModule>' > /etc/apache2/conf-enabled/app-defaults.conf
+
+# Disable directory indexing to prevent file listing
 RUN a2dismod -f autoindex
 
-# Ensure Apache configuration allows access
-RUN echo '<Directory /var/www/html>\n\
-    Options Indexes FollowSymLinks\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' > /etc/apache2/conf-available/app.conf \
-    && a2enconf app
-
-# Reload Apache modules
+# Reload Apache configuration to apply changes
 RUN service apache2 restart || true
 
 # Expose port 80 for HTTP traffic
