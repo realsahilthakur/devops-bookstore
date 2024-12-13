@@ -4,22 +4,21 @@ pipeline {
     stages {
         stage('Deploy to Production') {
             steps {
-                // Use the SSH agent plugin to authenticate with the EC2 instance
+                // Use SSH agent to connect to EC2 instance
                 sshagent(['ec2-ssh-credentials-id']) {
-                    sh """
-                        # Stop and remove any existing production container on EC2
-                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "docker stop book-production || true && docker rm book-production || true"
-                        
-                        # Pull the latest image from Docker Hub
-                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "docker pull realsahilthakur/devops-bookstore:latest"
-                        
-                        # Run the container on port 80
-                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "docker run --name book-production -d -p 80:80 realsahilthakur/devops-bookstore:latest"
-                    """
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "
+                            docker stop book-production || true &&
+                            docker rm book-production || true &&
+                            docker pull realsahilthakur/devops-bookstore:latest &&
+                            docker run --name book-production -d -p 80:80 realsahilthakur/devops-bookstore:latest
+                        "
+                    '''
                 }
             }
         }
     }
+
     post {
         success {
             echo "Production deployment successful!"
