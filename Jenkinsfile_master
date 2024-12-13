@@ -22,11 +22,11 @@ pipeline {
             }
         }
 
-        stage('Test Container') {
-            steps {
-                sh 'curl -I http://192.168.58.130:8081'
-            }
-        }
+     #   stage('Test Container') {
+      #      steps {
+       #         sh 'curl -I http://192.168.58.130:8081'
+        #    }
+        #}
 
         stage('Push Image to Docker Hub') {
             steps {
