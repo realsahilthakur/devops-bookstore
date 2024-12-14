@@ -28,17 +28,12 @@ pipeline {
                 sh 'docker build -t realsahilthakur/devopsbookstore .'
                 sh "docker tag realsahilthakur/devopsbookstore realsahilthakur/devopsbookstore:develop-${env.BUILD_ID}"
                 sh 'docker run -d --name development-container -p 8081:80 realsahilthakur/devopsbookstore'
-                '''
             }
         }
 
         stage('Test Docker Container') {
             steps {
-                sh '''
-                    docker run -d --name development-container -p 8081:80 realsahilthakur/devopsbookstore
-                    curl -I http://192.168.58.130:8081
-
-                '''
+                sh 'curl -I http://192.168.58.130:8081'
             }
         }
 
