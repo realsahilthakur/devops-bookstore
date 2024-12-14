@@ -1,51 +1,61 @@
 pipeline {
-    agent any // Specifies the pipeline can run on any available agent
+    agent any
+
     stages {
-        stage('Cleanup') {
+        stage('Cleanup Workspace') {
             steps {
-                cleanWs()
+                cleanWs() // Cleans up the workspace
             }
         }
 
         stage('Clone Repository') {
             steps {
-                checkout scm
+                checkout scm // Clones the current repository
             }
         }
 
-        stage('Build and Run Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                sh 'docker stop dev-container || true && docker rm dev-container || true'
-                sh 'docker build -t realsahilthakur/devops-bookstore .'
-                sh "docker tag realsahilthakur/devops-bookstore realsahilthakur/devops-bookstore:develop-${env.BUILD_ID}"
-                sh 'docker run -d --name dev-container -p 8081:80 realsahilthakur/devops-bookstore'
+                sh '''
+                    docker stop dev-container || true
+                    docker rm dev-container || true
+                    docker build -t realsahilthakur/devops-bookstore .
+                '''
             }
         }
 
-       stage('Test Container') {
-         steps {
-               sh 'curl -I http://192.168.58.130:8081'
+        stage('Test Docker Container') {
+            steps {
+                sh '''
+                    docker run -d --name dev-container -p 8081:80 realsahilthakur/devops-bookstore
+                    curl -I http://localhost:8081
+                '''
+            }
         }
-         }
 
-        stage('Push Image to Docker Hub') {
+        stage('Push Docker Image to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerpassword', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh 'docker login -u ${USERNAME} -p ${PASSWORD}'
-                    sh 'docker push realsahilthakur/devops-bookstore'
-                    sh "docker push realsahilthakur/devops-bookstore:develop-${env.BUILD_ID}"                    
+                    sh '''
+                        docker login -u $USERNAME -p $PASSWORD
+                        docker tag realsahilthakur/devops-bookstore realsahilthakur/devops-bookstore:develop-${BUILD_ID}
+                        docker push realsahilthakur/devops-bookstore
+                        docker push realsahilthakur/devops-bookstore:develop-${BUILD_ID}
+                    '''
                 }
             }
         }
-        stage('Deploy to Staging') {
+
+        stage('Trigger Staging Pipeline') {
             steps {
-                build 'BookStaging'
+                build job: 'BookStaging' // Trigger the staging pipeline
             }
         }
-      stage ('After development'){
-        steps{
-            echo "staging sutomated"
+    }
+
+    post {
+        always {
+            echo 'Development pipeline completed!'
         }
-      }
     }
 }
