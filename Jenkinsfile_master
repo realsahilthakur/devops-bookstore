@@ -17,8 +17,8 @@ pipeline {
         stage('Stop and Remove Existing Container') {
             steps {
                 sh '''
-                    docker stop dev-container || true
-                    docker rm dev-container || true
+                    docker stop development-container || true
+                    docker rm development-container || true
                 '''
             }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                    docker build -t realsahilthakur/devops-bookstore .
+                    docker build -t realsahilthakur/devopsbookstore .
                 '''
             }
         }
@@ -34,8 +34,8 @@ pipeline {
         stage('Test Docker Container') {
             steps {
                 sh '''
-                    docker run -d --name dev-container -p 8081:80 realsahilthakur/devops-bookstore
-                    curl -I http://192.168.58.130:8082
+                    docker run -d --name development-container -p 8081:80 realsahilthakur/devopsbookstore
+                    curl -I http://192.168.58.130:8081
 
                 '''
             }
@@ -46,9 +46,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerpassword', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
                         docker login -u $USERNAME -p $PASSWORD
-                        docker tag realsahilthakur/devops-bookstore realsahilthakur/devops-bookstore:develop-${BUILD_ID}
-                        docker push realsahilthakur/devops-bookstore
-                        docker push realsahilthakur/devops-bookstore:develop-${BUILD_ID}
+                        docker tag realsahilthakur/devopsbookstore realsahilthakur/devopsbookstore:develop-${BUILD_ID}
+                        docker push realsahilthakur/devopsbookstore
+                        docker push realsahilthakur/devopsbookstore:develop-${BUILD_ID}
                     '''
                 }
             }
