@@ -7,10 +7,10 @@ pipeline {
                 sshagent(['ec2-ssh-credentials-id']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@52.90.95.71  "
-                            docker stop book-production || true &&
-                            docker rm book-production || true &&
-                            docker pull realsahilthakur/devops-bookstore:latest &&
-                            docker run --name book-production -d -p 80:80 realsahilthakur/devops-bookstore:latest
+                            docker stop production-container || true &&
+                            docker rm production-container || true &&
+                            docker pull realsahilthakur/devopsbookstore:latest &&
+                            docker run --name production-container -d -p 80:80 realsahilthakur/devopsbookstore:latest
                         "
                     '''
                 }
