@@ -10,7 +10,7 @@ pipeline {
                             docker stop production-container || true &&
                             docker rm production-container || true &&
                             docker pull realsahilthakur/devopsbookstore:latest &&
-                            docker run --name production-container -d -p 80:80 realsahilthakur/devopsbookstore:latest
+                            docker run --name production-container -d -p 8083:80 realsahilthakur/devopsbookstore:latest
                         "
                     '''
                 }
