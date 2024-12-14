@@ -1,25 +1,37 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build and run docker image') {
+        stage('Pull Docker Image') {
             steps {
                 sh '''
                     docker stop book-staging || true
                     docker rm book-staging || true
-
                     docker pull realsahilthakur/devops-bookstore:latest
+                '''
+            }
+        }
 
+        stage('Run Staging Container') {
+            steps {
+                sh '''
                     docker run --name book-staging -d -p 8082:80 realsahilthakur/devops-bookstore:latest
                 '''
             }
         }
-        stage('Testing') {
+
+        stage('Test Application') {
             steps {
                 sh '''
-                    # Test the running container
                     curl -I http://192.168.58.130:8082
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Staging pipeline completed!'
         }
     }
 }
