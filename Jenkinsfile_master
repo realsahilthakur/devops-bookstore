@@ -25,8 +25,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh '''
-                    docker build -t realsahilthakur/devopsbookstore .
+                sh 'docker build -t realsahilthakur/devopsbookstore .'
+                sh "docker tag realsahilthakur/devopsbookstore realsahilthakur/devopsbookstore:develop-${env.BUILD_ID}"
+                sh 'docker run -d --name development-container -p 8081:80 realsahilthakur/devopsbookstore'
                 '''
             }
         }
