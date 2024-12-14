@@ -14,11 +14,18 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Stop and Remove Existing Container') {
             steps {
                 sh '''
                     docker stop dev-container || true
                     docker rm dev-container || true
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
                     docker build -t realsahilthakur/devops-bookstore .
                 '''
             }
@@ -28,7 +35,7 @@ pipeline {
             steps {
                 sh '''
                     docker run -d --name dev-container -p 8081:80 realsahilthakur/devops-bookstore
-                    curl -I http://192.168.58.130:8081
+                    curl -I http://localhost:8081
                 '''
             }
         }
