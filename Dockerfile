@@ -1,66 +1,23 @@
-# Use the official PHP image as the base
-FROM php:7.4-apache
+# Step 1: Use a base image with PHP and Apache
+FROM php:8.2-apache
 
-# Install required extensions and tools
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    curl \
-    unzip \
-    git \
-    && docker-php-ext-install pdo_mysql mysqli mbstring exif pcntl bcmath gd
+# Step 2: Enable required Apache modules
+RUN a2enmod rewrite
 
-# Set working directory
+# Step 3: Copy your PHP application code to the container
+COPY . /var/www/html
+
+# Step 4: Set the working directory
 WORKDIR /var/www/html
 
-# Copy application code
-COPY . /var/www/html/
+# Step 5: Install additional PHP extensions if needed
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Expose port 80
+# Step 6: Expose the HTTP port
 EXPOSE 80
 
-# Start Apache
+# Step 7: Set the default command (Apache in foreground mode)
 CMD ["apache2-foreground"]
-
-
-##sahil doing
-
-# # Use the official PHP image with Apache
-# FROM php:7.4-apache
-
-# # Set the working directory inside the container
-# WORKDIR /var/www/html
-
-# # Copy application code
-# COPY . /var/www/html
-
-# # Fix ownership and permissions for Apache
-# RUN chown -R www-data:www-data /var/www/html \
-#     && chmod -R 755 /var/www/html
-
-# # Update Apache configuration to set login.php as the default file
-# RUN echo '<IfModule dir_module>\n\
-#     DirectoryIndex login.php index.php index.html\n\
-# </IfModule>' > /etc/apache2/conf-enabled/app-defaults.conf
-
-# # Disable directory indexing to prevent file listing
-# RUN a2dismod -f autoindex
-
-# # Reload Apache configuration to apply changes
-# RUN service apache2 restart || true
-
-# # Expose port 80 for HTTP traffic
-# EXPOSE 80
-
-# # Start Apache in the foreground
-# CMD ["apache2-foreground"]
 
 
 #-------------------------------#
