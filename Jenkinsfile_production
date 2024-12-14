@@ -7,7 +7,7 @@ pipeline {
                 // Use SSH agent to connect to EC2 instance
                 sshagent(['ec2-ssh-credentials-id']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ec2-user@54.146.97.72 "
+                        ssh -o StrictHostKeyChecking=no ec2-user@52.90.95.71  "
                             docker stop book-production || true &&
                             docker rm book-production || true &&
                             docker pull realsahilthakur/devops-bookstore:latest &&
