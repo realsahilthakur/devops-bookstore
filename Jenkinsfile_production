@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Deploy to Production') {
             steps {
-                // Use SSH agent to connect to EC2 instance
                 sshagent(['ec2-ssh-credentials-id']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@52.90.95.71  "
@@ -21,10 +20,10 @@ pipeline {
 
     post {
         success {
-            echo "Production deployment successful!"
+            echo 'Production deployment successful!'
         }
         failure {
-            echo "Production deployment failed."
+            echo 'Production deployment failed!'
         }
     }
 }
