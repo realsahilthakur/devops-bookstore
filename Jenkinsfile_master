@@ -52,7 +52,7 @@ pipeline {
 
         stage('Trigger Staging Pipeline') {
             steps {
-                build job: 'BookStaging' // Trigger the staging pipeline
+                build 'BookStaging'
             }
         }
     }
