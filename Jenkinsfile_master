@@ -28,7 +28,7 @@ pipeline {
             steps {
                 sh '''
                     docker run -d --name dev-container -p 8081:80 realsahilthakur/devops-bookstore
-                    curl -I http://localhost:8081
+                    curl -I http://192.168.58.130:8081
                 '''
             }
         }
